@@ -29,7 +29,7 @@ app.post("/signup",async (req, res) => {
         username: req.body.username
     })
 
-    if(user._id){
+    if(user){
         return res.status(400).json({
             success: false,
             message: "User already exists"
@@ -44,6 +44,12 @@ app.post("/signup",async (req, res) => {
         expiresIn: "3h"
     
     })
+
+    await Account.create({
+        userId: dbUser._id,
+        balance: 1 + Math.random()*10000
+    })
+
     res.json(
         {
             success: true,
