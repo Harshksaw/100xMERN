@@ -1,17 +1,54 @@
-const moongoose = require('mongoose');
+// backend/db.js
+const mongoose = require('mongoose');
 
-const connectDB = async () => {
-    try {
-        // mongodb connection string
-        const con = await moongoose.connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-       
-        });
-        console.log(`MongoDB connected: ${con.connection.host}`);
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
+mongoose.connect("mongodb+srv://harshkumar:programmer@cluster0.nxozrfb.mongodb.net/")
+
+// Create a Schema for Users
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
+        minLength: 3,
+        maxLength: 30
+    },
+    password: {
+        type: String,
+        required: true,
+        minLength: 6
+    },
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+        maxLength: 50
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
+        maxLength: 50
     }
-}
-connectDB();
+});
 
+const accountSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId, // Reference to User model
+        ref: 'User',
+        required: true
+    },
+    balance: {
+        type: Number,
+        required: true
+    }
+});
+
+const Account = mongoose.model('Account', accountSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = {
+	User,
+    Account
+};

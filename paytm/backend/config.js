@@ -1,3 +1,4 @@
-const JWT_SCRET  = "harshkumarsaw"
-
-module.exports = JWT_SCRET
+//backend/config.js
+module.exports = {
+	JWT_SECRET: "your-jwt-secret"
+}
