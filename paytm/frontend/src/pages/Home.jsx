@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
+import { Link } from 'react-router-dom';
 
 
 
@@ -39,7 +39,13 @@ const Home = () => {
                     Paytm is an online wallet app that allows you to securely make payments and manage your finances. With its user-friendly interface and robust security features, Paytm ensures a seamless and convenient payment experience.
                 </p>
                 {/* Add your payment application content here */}
+                <div className="flex justify-between mt-4">
+                    <Link to="/signup" className="px-4 py-2 bg-blue-500 text-white rounded-md">Sign Up</Link>
+
+                <Link to="/signin" className="px-4 py-2 bg-blue-500 text-white rounded-md">Sign In</Link>
+                </div>
             </motion.div>
+         
         </div>
     );
 };
