@@ -46,7 +46,7 @@ router.post('/signup', async (req, res) => {
     }
   });
 
-    router.get('/me', authenticateJwt, async (req, res) => {
+router.get('/me', authenticateJwt, async (req, res) => {
       const userId = req.headers["userId"];
       const user = await User.findOne({ _id: userId });
       if (user) {
