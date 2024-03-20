@@ -1,0 +1,11 @@
+{
+    "extends": "@repo/typescript-configs/tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "baseUrl": "./",
+        "paths": {
+            "@repo/common": ["src/index.ts"]
+        }
+    }
+}
