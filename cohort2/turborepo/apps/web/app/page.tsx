@@ -9,7 +9,12 @@ type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div>page</div>
+    <div>page
+
+      <Button>
+        Hi there
+      </Button>
+    </div>
   )
 }
 
