@@ -1,0 +1,31 @@
+
+
+# BEGIN: ed8c6549bwf9
+# END: ed8c6549bwf9
+# Ignore node_modules directory
+node_modules/
+# Ignore node.js and React build directories
+node_modules/
+build//
+
+# Ignore Next.js build directories
+.next/
+
+out/
+.cache/
+
+# Ignore temporary files
+.tmp/
+
+# Ignore compiled files
+*.o
+*.pyc
+*.class
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+
+# Ignore dependencies
+package-lock.json
+yarn.lock
