@@ -2,17 +2,24 @@ import path from "path";
 import * as grpc from "@grpc/grpc-js";
 import { GrpcObject, ServiceClientConstructor } from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
+
 import { ProtoGrpcType } from "./proto/a";
 import { AddressBookServiceHandlers } from "./proto/AddressBookService";
 import { Status } from "@grpc/grpc-js/build/src/constants";
+
+
 
 const packageDefinition = protoLoader.loadSync(
   path.join(__dirname, "./a.proto"),
 );
 
+
 const personProto = grpc.loadPackageDefinition(
   packageDefinition,
 ) as unknown as ProtoGrpcType;
+
+const personProto = grpc.loadPackageDefinition(packageDefinition);
+
 
 const PERSONS = [
   {
@@ -24,6 +31,7 @@ const PERSONS = [
     age: 45,
   },
 ];
+
 
 const handler: AddressBookServiceHandlers = {
   AddPerson: (call, callback) => {
@@ -53,6 +61,25 @@ const handler: AddressBookServiceHandlers = {
 const server = new grpc.Server();
 
 server.addService(personProto.AddressBookService.service, handler);
+
+//@ts-ignore
+function addPerson(call, callback) {
+  console.log(call);
+  let person = {
+    name: call.request.name,
+    age: call.request.age,
+  };
+  PERSONS.push(person);
+  callback(null, person);
+}
+
+const server = new grpc.Server();
+
+server.addService(
+  (personProto.AddressBookService as ServiceClientConstructor).service,
+  { addPerson: addPerson },
+);
+
 server.bindAsync(
   "0.0.0.0:50051",
   grpc.ServerCredentials.createInsecure(),
