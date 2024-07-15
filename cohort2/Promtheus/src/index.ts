@@ -26,4 +26,11 @@ app.get("/metrics", async (req, res) => {
   res.set("Content-Type", client.register.contentType);
   res.end(metrics);
 });
+
+export const requestCounter = new client.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status_code"],
+});
+
 app.listen(3000);
