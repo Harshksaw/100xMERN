@@ -1,0 +1,13 @@
+{
+  "name": "loadtesting",
+  "version": "1.0.0",
+  "main": "script1.js",  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node script1.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
