@@ -1,47 +1,49 @@
-import express from "express";
-import cluster from "cluster";
-import os from "os";
+// sum_cluster.js
+const cluster = require('cluster');
+const os = require('os');
 
-const totalCPUs = os.cpus().length;
+const totalNumbers = 5000923823929398239298389232398893298328932000;
+const numCPUs = os.cpus().length;
 
-const port = 3000;
+if (cluster.isMaster) {
+  console.log(`Master process ${process.pid} running.`);
+  let sum = 0;
+  let finishedWorkers = 0;
 
-if (cluster.isPrimary) {
-  console.log(`Number of CPUs is ${totalCPUs}`);
-  console.log(`Primary ${process.pid} is running`);
+  // Divide range into equal chunks for each CPU
+  const numbersPerWorker = Math.floor(totalNumbers / numCPUs);
 
-  // Fork workers.
-  for (let i = 0; i < totalCPUs; i++) {
-    cluster.fork();
+  for (let i = 0; i < numCPUs; i++) {
+    const start = i * numbersPerWorker + 1;
+    // Adjust end for the last worker to cover all numbers
+    const end = (i === numCPUs - 1) ? totalNumbers : (i + 1) * numbersPerWorker;
+
+    const worker = cluster.fork();
+
+    worker.send({ start, end });
+
+    worker.on('message', (partialSum) => {
+      console.log(`Worker ${worker.process.pid} finished: ${partialSum}`);
+      sum += partialSum;
+      finishedWorkers++;
+
+      if (finishedWorkers === numCPUs) {
+        console.log(`Final Sum (1 to ${totalNumbers}): ${sum}`);
+      }
+    });
   }
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-    console.log("Let's fork another worker!");
-    cluster.fork();
+  cluster.on('exit', (worker) => {
+    console.log(`Worker ${worker.process.pid} exited.`);
   });
+
 } else {
-  const app = express();
-  console.log(`Worker ${process.pid} started`);
-
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
-
-  app.get("/api/:n", function (req, res) {
-    let n = parseInt(req.params.n);
-    let count = 0;
-
-    if (n > 5000000000) n = 5000000000;
-
-    for (let i = 0; i <= n; i++) {
-      count += i;
+  process.on('message', ({ start, end }) => {
+    let partialSum = 0;
+    for (let i = start; i <= end; i++) {
+      partialSum += i;
     }
-
-    res.send(`Final count is ${count} ${process.pid}`);
-  });
-
-  app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+    process.send(partialSum);
+    process.exit();
   });
 }
